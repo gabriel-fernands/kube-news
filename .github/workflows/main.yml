@@ -16,12 +16,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Construção da imagem Docker
-      uses: docker/build-push-action@v6.18.0
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
       with:
-       context : ./src
-       file: ./src/Dockerfile
+       context: .
        push: true
-       tags:
-        gabrielfernandes/kube-news:RELEASE 0.0.1
-        gabrielfernandes/kube-news:latest
+       tags: |
+         gabrielfernandes/kube-news:0.0.1
+         gabrielfernandes/kube-news:latest
