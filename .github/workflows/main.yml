@@ -34,5 +34,5 @@ jobs:
           push: true
           tags: |
             gabriel033/kube-news:latest
-            gabriel033/kube-news:0.0.1
+            gabriel033/kube-news:${{github.run_number}}
 
