@@ -1,32 +1,38 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
 name: CI-CD
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-
-  CI:
+  docker:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Autenticação Docker Hub
-      uses: docker/login-action@v3.5.0
-      with:
-       username: ${{secrets.DOCKER_USER}}
-       password: ${{secrets.DOCKER_PWD}}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-       context: .
-       push: true
-       tags: |
-         gabrielfernandes/kube-news:0.0.1
-         gabrielfernandes/kube-news:latest
+    steps:
+      # Pega o código do repositório
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Login no Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PWD }}
+
+      # Configura o buildx (necessário pro build multi-plataforma e cache)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build e Push da imagem
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            gabrielfernandes/kube-news:latest
+            gabrielfernandes/kube-news:0.0.1
+
